@@ -56,8 +56,14 @@ imageList.forEach((item, index) => {
         buttonElement.classList.add("selected");
     }
 
+    const id = `Image_${item}_${index+1}`
+    buttonElement.setAttribute("data-id", id);
+    imgElement.setAttribute("id", id);
+
     navBar.append(buttonElement);
     imageShow.append(imgElement);
+
+    buttonElement.se
 
     buttonElement.addEventListener('click', () => {
         document.querySelectorAll('button.displayButton').forEach((button)=>{
@@ -71,6 +77,10 @@ imageList.forEach((item, index) => {
         buttonElement.classList.add("selected")
     });
 
+    buttonElement.addEventListener("keydown", (event) => {
+        console.log(event);
+    });
+
     const inputElement = imgElement.querySelector("input");
     inputElement.addEventListener("input", () =>{
         const spanElement = buttonElement.querySelector("span");
@@ -78,3 +88,40 @@ imageList.forEach((item, index) => {
     });
 
 });
+
+const buttonList = document.querySelectorAll(".displayButton");
+const number_of_buttons = buttonList.length;
+
+document.addEventListener("keydown", (event) => {
+    let flag = 0;
+    if(event.key == "ArrowDown"){
+        flag = 1;
+    }else if(event.key == "ArrowUp"){
+        flag = -1;
+    }else{
+        return;
+    }
+
+    
+    buttonList.forEach((button, index) => {
+        if(button.classList.contains("selected") && flag!=0){
+            if((flag+index)<number_of_buttons && (flag+index)>=0){
+                button.classList.remove("selected");
+
+                //hidding the already selected image element;
+                const id = button.getAttribute("data-id");
+                const imgElement = document.getElementById(id);
+                imgElement.classList.add("hidden");
+
+                //updating the new image element
+                const updateButton = buttonList[flag+index];
+                updateButton.classList.add("selected");
+                const newImg = document.getElementById(updateButton.getAttribute("data-id"));
+                newImg.classList.remove("hidden");
+            }
+            flag = 0;
+        }
+    });
+});
+
+
