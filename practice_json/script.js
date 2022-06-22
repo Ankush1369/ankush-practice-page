@@ -53,17 +53,33 @@ fetch(url)
     });
 
 
-
-function checkAndFixOverflow(spanElement){
-        let currentWidth = spanElement.scrollWidth;
-        const spanText = spanElement.textContent;
-        spanElement.textContent = "";
-        let minimumWidth = spanElement.scrollWidth;
-        spanElement.textContent = spanText;
-    
-        if(currentWidth > minimumWidth){
-            console.log("Span Element overflow..");
+function checkOverflow(spanElement){
+    let scrollWidth = spanElement.scrollWidth;
+    let clientWidth = spanElement.clientWidth;
+    return scrollWidth > clientWidth;
+}
+function spanOverflow(spanElement){
+        if(!checkOverflow(spanElement)){
+            return;
         }
+        const spanText = spanElement.textContent;
+        const spanLength = spanText.length;
+        let high = spanLength/2;
+        let low = 0;
+        while(low<high){
+            let mid = (low+high)/2;
+            let newText = spanText.slice(0, mid) + ".........." + spanText.slice(-mid);
+            spanElement.textContent = newText;
+
+            if(checkOverflow(spanElement)){
+                high = mid-1;
+            }else{
+                low = mid;
+            }
+        }
+
+        spanElement.textContent = spanText.slice(0, low) + "......" + spanText.slice(-low);
+
 }
 
 function createButton(imageData, index){
@@ -79,8 +95,7 @@ function createButton(imageData, index){
 
     const buttonText = document.createElement("span");
     buttonText.setAttribute("textContent", imgTitle);
-    buttonText.textContent = imgTitle
-    checkAndFixOverflow(buttonText);
+    buttonText.textContent = imgTitle;
 
     buttonElement.append(buttonIcon);
     buttonElement.append(buttonText);
@@ -98,7 +113,7 @@ function selectButton(buttonElementIndex){
     const buttonText = buttonArray[buttonElementIndex].querySelector("span");
 
     imageElement.setAttribute("src", buttonIcon.getAttribute("src"));
-    imageLabel.value = buttonText.textContent;
+    imageLabel.value = buttonText.getAttribute("textContent");
 }
 
 
@@ -125,7 +140,7 @@ imageLabel.addEventListener('input', () => {
     const spanElement = buttonArray[currently_selected].querySelector("span");
     spanElement.setAttribute("textContent", imageLabel.value);
     spanElement.textContent = imageLabel.value;
-    checkAndFixOverflow(spanElement);
+    spanOverflow(spanElement);
 });
 
 document.addEventListener('keydown', (keyPress) => {
@@ -142,8 +157,12 @@ document.addEventListener('keydown', (keyPress) => {
 });
 
 
-
-
 addImages(datasrc);
+
+document.querySelectorAll("button span").forEach((spanElement) => {
+    spanOverflow(spanElement);
+});
+
+// document.query
 
 // function change

@@ -39,9 +39,9 @@ nav button > * {
 
 button span {
     flex: 1;
-    overflow: hidden;
+    overflow: scroll;
     white-space: nowrap;
-    text-overflow: ellipsis;
+    /* text-overflow: ellipsis; */
     text-align: left;
     padding: 10px;
     align-self: center;
